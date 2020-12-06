@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Image, Alert } from 'react-native';
- 
+import * as firebase from 'firebase'; 
 
 const showAlertHandler = () => {
   Alert.alert(
@@ -14,13 +14,27 @@ const showAlertHandler = () => {
 };
 
 const SignUpScreen = () => {
+  const [email,setEmail] = React.useState('');
+  const [password,setPassword] = React.useState('');
+ 
+
+  const onSignUpPressed = () => {
+      firebase.auth().createUserWithEmailAndPassword(email,password)
+        .then(()=>{
+
+        }).catch((err) => {
+            alert(err);
+        })
+  }
   return (
     <View style={styles.container}>
       <Image style = {{width: 350, height: 150}} source={require('../SignIn/s1.png')} />
 
       <TextInput placeholder='Email'
       keyboardType='email-address' 
-      style = {styles.txtInput}/>
+      style = {styles.txtInput}
+      value={email}
+          onChangeText={(text) => setEmail(text)}/>
 
       <TextInput placeholder='Username'
       style = {styles.txtInput}/>
@@ -31,13 +45,15 @@ const SignUpScreen = () => {
 
       <TextInput placeholder='Password' 
       style = {styles.txtInput} 
-      secureTextEntry={true} />
+      secureTextEntry={true}
+      value={password}
+         onChangeText={(text) => setPassword(text)} />
 
       <TextInput placeholder='Konfirmasi Password' 
       style = {styles.txtInput} 
       secureTextEntry={true} />
 
-      <TouchableOpacity style={styles.Btn} onPress={showAlertHandler} >
+      <TouchableOpacity style={styles.Btn} onPress={onSignUpPressed} >
         <Text style={styles.txtBtn}>Daftar</Text>
       </TouchableOpacity>
   
