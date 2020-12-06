@@ -9,6 +9,7 @@ import ProfileScreen from './src/Profile';
 import { createDrawerNavigator,DrawerContentScrollView,DrawerItemList,DrawerItem, } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {MaterialCommunityIcons} from '@expo/vector-icons'
+import * as firebase from 'firebase';
 
 const Drawer = createDrawerNavigator();
  
@@ -57,10 +58,20 @@ const CustomDrawerContent = (props) => {
   return (
     <DrawerContentScrollView {...props}>
       <DrawerItemList {...props} />
-      <DrawerItem label="Log Out" onPress={props.onSignOut} />
+      <DrawerItem label="Log Out" onPress={() => firebase.auth().signOut()} />
     </DrawerContentScrollView>
   );
 }
+
+firebaseConfig = {
+  apiKey: "AIzaSyDWbb4C6vA2KjbApjlcsoPIGetvAiUeiJo",
+  authDomain: "vhitara-ffcad.firebaseapp.com",
+  projectId: "vhitara-ffcad",
+  storageBucket: "vhitara-ffcad.appspot.com",
+  messagingSenderId: "826543310682",
+  appId: "1:826543310682:web:8428386bdec52fc36dd563",
+  measurementId: "G-L7N9ZBXWZF"
+};
 
 const HomeDrawer = ({onSignOut}) => {
   return (
@@ -74,6 +85,7 @@ const RootStack = createStackNavigator();
  
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  const [isAuthenticatedReady, setIsAuthenticatedReady] = React.useState(false);
   const Hshown = 
   isAuthenticated ? ( false ) : ( true );
 
@@ -91,6 +103,15 @@ const App = () => {
  
     setIsAuthenticated(true);
   };
+
+  const onAuthStateChanged = (user) => {
+    setIsAuthenticatedReady(true);
+    setIsAuthenticated(!!user);
+  }
+  if (!firebase.apps.length) {firebase.initializeApp(firebaseConfig);}
+  firebase.auth().onAuthStateChanged(onAuthStateChanged);
+  //firebase.initializeApp(firebaseConfig);
+
 
   return (
     <NavigationContainer>
